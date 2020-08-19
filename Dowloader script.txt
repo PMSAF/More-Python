@@ -1,0 +1,91 @@
+# updated script from Uni
+# Script Name: Enhanced Python Automatic Downloader.
+# Script Description: This python script opens a file named urls.txt in the current folder and downloads each url
+# sequentially. Downloaded files are saved into the current folder.
+# Script Requirements: In urls.txt URLs must be one per line and no line can be blank.
+# The URL must not use GET parameters (e.g. http://server/retrieve?file=myfile).
+# urls.txt must be stored in the same folder as this file.
+# You must have read and write permission to this folder.
+#
+#
+# Import the module for the 'os (operating system) common pathname manipulations'.
+# Refer to: https://docs.python.org/3/library/os.path.html
+import os.path
+#
+# Import the module for the 'extensible library for opening URLs'.
+# Refer to: https://docs.python.org/3/library/urllib.request.html
+import urllib.request
+# Print the value of the pathname to the current working directory.
+pathname = os.getcwd()
+print("\nThe current working directory is :", pathname)
+#
+# Input a new  'pathname'.
+pathname = input("Please enter the new path where the downloaded files are to be stored: ")
+#
+#
+# Create a file object with the name 'links' and associate that file object
+# with a physical file named 'urls.txt'. Open the file for reading.
+# Refer to: https://www.w3schools.com/python/ref_func_open.asp
+# Refer to: https://docs.python.org/2.4/lib/bltin-file-objects.html
+links = open('urls.txt', 'rt')
+#
+# Use 'for loop' and process the file, one line at a time.
+for link in links:
+#
+    # Get one line of text (e.g. http://server/files/grades.doc),
+    # then get the filename from the end of the URL.
+    #
+    # Use the 'strip()' method to remove any leading and trailing blanks from the line.
+    # Refer to: https://www.w3schools.com/python/ref_string_strip.asp
+    #
+    link = link.strip()
+    #
+    # As the filename is located at the end of the line, use the 'rsplit()/ method to
+    # extract the filename in the line of text, by splitting on the '/' character.
+    # Refer to: https://www.w3schools.com/python/ref_string_rsplit.asp
+    #
+    filename = link.rsplit('/', 1)[-1]
+    # print(link.rsplit('/'))
+    # print(link.rsplit('/', 1))
+    # print("The filename is: ", link.rsplit('/', 1)[-1])
+    #
+    # Does this file exist in this folder? If not, download it.
+    # That is, if the file specified in 'urls.txt' does not already exist in the current
+    # working directory, try to download the file. If the file does already exist, the
+    # else: section of code is entered and the code prints "This file exists already".
+    #
+    # os.path.isfile(filename)
+    #
+    # Change the current working directory to the pathname as entered by the user.
+    os.chdir(pathname)
+    #
+    # os.path.isfile(path) returns True if path is an existing regular file.
+    # Refer to: https://docs.python.org/3/library/os.path.html
+    #
+    if not (os.path.isfile(filename)):
+        #
+        print('Now Downloading ' + str(link) + ' and saving as ' + pathname.rsplit('/', 1)[-1] + '\\' +  str(filename))
+        #
+        # The required file does not currently exist in the current working directory,
+        # so 'try' to download the file from the given link (URL)
+        try:
+            # *** Try to run this code ***
+            #
+            # Refer to: https://docs.python.org/3.0/library/urllib.request.html
+            urllib.request.urlretrieve(link, filename)
+            # Refer to: https://docs.python.org/2/library/os.path.html
+            print("File size was", os.path.getsize(filename))
+            #
+            # *** If there is a problem in the 'try' section above, ***
+            # *** then 'throw' an exception and run this code.      ***
+            #
+        except Exception as inst:
+            # Note that the exception error/code is captured and stored in the variable 'inst'.
+            print(inst)
+            print('  Encountered unknown error. Continuing.')
+    # File exists; don't download
+    #
+    else:
+        print("This file exists already.")
+# End of program
+print("Finished downloading.")
